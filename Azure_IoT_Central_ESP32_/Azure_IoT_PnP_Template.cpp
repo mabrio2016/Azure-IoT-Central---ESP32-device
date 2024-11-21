@@ -74,6 +74,9 @@ static az_span COMMAND_NAME_DISPLAY_TEXT = AZ_SPAN_FROM_STR("DisplayText");
 
 /* --- Data --- */
 #define DATA_BUFFER_SIZE 1024
+
+#define RGB_BUILTIN 48
+
 static uint8_t data_buffer[DATA_BUFFER_SIZE];
 static uint32_t telemetry_send_count = 0;
 
@@ -176,14 +179,18 @@ int azure_pnp_handle_command_request(azure_iot_t* azure_iot, command_request_t c
   if (az_span_is_content_equal(command.command_name, COMMAND_NAME_TOGGLE_LED_1))
   {
     led1_on = !led1_on;
+    if (led1_on == false) rgbLedWrite(RGB_BUILTIN, 0, 0, 0);  // Off / black
     LogInfo("LED 1 state: %s", (led1_on ? "ON" : "OFF"));
     response_code = COMMAND_RESPONSE_CODE_ACCEPTED;
+    if (led1_on == true) rgbLedWrite(RGB_BUILTIN, 0, 0, RGB_BRIGHTNESS);  // Blue
   }
   else if (az_span_is_content_equal(command.command_name, COMMAND_NAME_TOGGLE_LED_2))
   {
     led2_on = !led2_on;
+    if (led2_on == false) rgbLedWrite(RGB_BUILTIN, 0, 0, 0);  // Off / black
     LogInfo("LED 2 state: %s", (led2_on ? "ON" : "OFF"));
     response_code = COMMAND_RESPONSE_CODE_ACCEPTED;
+    if (led2_on == true) rgbLedWrite(RGB_BUILTIN, RGB_BRIGHTNESS, 0, 0);  // Red
   }
   else if (az_span_is_content_equal(command.command_name, COMMAND_NAME_DISPLAY_TEXT))
   {
